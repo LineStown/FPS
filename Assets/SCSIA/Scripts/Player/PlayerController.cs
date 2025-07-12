@@ -1,11 +1,12 @@
 ﻿using Assets.SCSIA.Scripts.Input;
+using Assets.SCSIA.Scripts.Weapon;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Assets.SCSIA.Scripts.Player
 {
-    public class PlayerController : MonoBehaviour
+    internal class PlayerController : MonoBehaviour
     {
         //############################################################################################
         // FIELDS
@@ -26,6 +27,9 @@ namespace Assets.SCSIA.Scripts.Player
         [SerializeField] private float _accelerateMultiplier = 10f;
         [SerializeField] private float _airMultiplier = 0.2f;
         [SerializeField] private float _jumpPower = 7f;
+
+        [Header("Weapon Control Settings")]
+        [SerializeField] private WeaponController _weaponController;
 
         private GIS _gis;
         private Vector2 _lookDirection = Vector2.zero;
@@ -83,6 +87,7 @@ namespace Assets.SCSIA.Scripts.Player
             _gis.Player.Sprint.performed += ctx => _sprintEnabled = true;
             _gis.Player.Sprint.canceled += ctx => _sprintEnabled = false;
             _gis.Player.Jump.performed += ctx => _jumpEnabled = true;
+            _gis.Player.Shot.performed += ctx => _weaponController.Shot();
             _gis.Enable();
         }
 
@@ -96,12 +101,12 @@ namespace Assets.SCSIA.Scripts.Player
             // y
             _lookDirection.y -= lookInput.y;
             _lookDirection.y = Mathf.Clamp(_lookDirection.y, _lookMinPitch, _lookMaxPitch);
-            _lookCamera.transform.localRotation = Quaternion.Euler(_lookDirection.y, 0f, 0f);
+            _lookSpot.transform.localRotation = Quaternion.Euler(_lookDirection.y, 0f, 0f);
         }
 
         private void SetupLookSpot()
         {
-            _lookSpot.localPosition = new Vector3(0f, _lookSpotHeight, 0f);
+            _lookSpot.localPosition = new Vector3(0f, -_playerCapsuleCollider.height * 0.5f + _lookSpotHeight, 0f);
             _lookSpot.localRotation = Quaternion.identity;
         }
 
@@ -136,7 +141,9 @@ namespace Assets.SCSIA.Scripts.Player
             else
             {
                 // move
-                Vector3 targetDirection = (_lookSpot.transform.forward * _moveInput.y + _lookSpot.transform.right * _moveInput.x).normalized;
+                Vector3 targetDirection = (_lookSpot.transform.forward * _moveInput.y + _lookSpot.transform.right * _moveInput.x);
+                targetDirection.y = 0f;
+                targetDirection = targetDirection.normalized;
                 float acceleration = (_grounded ? (_sprintEnabled ? _sprintSpeed : _walkSpeed) : _walkSpeed * _airMultiplier) * _accelerateMultiplier;
                 _playerRigidbody.AddForce(targetDirection * acceleration, ForceMode.Force);
             }

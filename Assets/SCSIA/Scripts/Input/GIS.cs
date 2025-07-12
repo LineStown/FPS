@@ -128,6 +128,15 @@ namespace Assets.SCSIA.Scripts.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Shot"",
+                    ""type"": ""Button"",
+                    ""id"": ""79ea8098-9dbc-4abc-9103-95abd4e641e5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -218,6 +227,17 @@ namespace Assets.SCSIA.Scripts.Input
                     ""action"": ""Jump"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""48a9636b-20b5-4fea-8272-eb4e35e08a76"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";PC"",
+                    ""action"": ""Shot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -236,6 +256,7 @@ namespace Assets.SCSIA.Scripts.Input
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
+            m_Player_Shot = m_Player.FindAction("Shot", throwIfNotFound: true);
         }
 
         ~@GIS()
@@ -320,6 +341,7 @@ namespace Assets.SCSIA.Scripts.Input
         private readonly InputAction m_Player_Move;
         private readonly InputAction m_Player_Sprint;
         private readonly InputAction m_Player_Jump;
+        private readonly InputAction m_Player_Shot;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -347,6 +369,10 @@ namespace Assets.SCSIA.Scripts.Input
             /// Provides access to the underlying input action "Player/Jump".
             /// </summary>
             public InputAction @Jump => m_Wrapper.m_Player_Jump;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/Shot".
+            /// </summary>
+            public InputAction @Shot => m_Wrapper.m_Player_Shot;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -385,6 +411,9 @@ namespace Assets.SCSIA.Scripts.Input
                 @Jump.started += instance.OnJump;
                 @Jump.performed += instance.OnJump;
                 @Jump.canceled += instance.OnJump;
+                @Shot.started += instance.OnShot;
+                @Shot.performed += instance.OnShot;
+                @Shot.canceled += instance.OnShot;
             }
 
             /// <summary>
@@ -408,6 +437,9 @@ namespace Assets.SCSIA.Scripts.Input
                 @Jump.started -= instance.OnJump;
                 @Jump.performed -= instance.OnJump;
                 @Jump.canceled -= instance.OnJump;
+                @Shot.started -= instance.OnShot;
+                @Shot.performed -= instance.OnShot;
+                @Shot.canceled -= instance.OnShot;
             }
 
             /// <summary>
@@ -489,6 +521,13 @@ namespace Assets.SCSIA.Scripts.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnJump(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Shot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnShot(InputAction.CallbackContext context);
         }
     }
 }
