@@ -1261,6 +1261,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffeaa29d44132e844bd1e3e5bf883631, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _fireSpeed: 200
+  _audioSource: {fileID: 2041762397}
+  _audioClip: {fileID: 8300000, guid: a414b4da0d4458442b6039ce81241e99, type: 3}
   _camera: {fileID: 330585545}
   _bulletRigidbody: {fileID: 3092678716497233472, guid: 09d460f9f5596f94f98215e03189c25c, type: 3}
   _bulletSpawnPoint: {fileID: 1172762969}
@@ -11549,6 +11552,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 7030309189360392272, guid: 3310fde5be2331a43b4d206deb3f75ca, type: 3}
   m_PrefabInstance: {fileID: 1981657459}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &2041762397 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 3143919012268700836, guid: fa392956c15a6f446b67fabebf19b961, type: 3}
+  m_PrefabInstance: {fileID: 581464875}
   m_PrefabAsset: {fileID: 0}
 --- !u!43 &2076899415
 Mesh:
