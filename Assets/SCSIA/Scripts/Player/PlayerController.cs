@@ -87,7 +87,8 @@ namespace Assets.SCSIA.Scripts.Player
             _gis.Player.Sprint.performed += ctx => _sprintEnabled = true;
             _gis.Player.Sprint.canceled += ctx => _sprintEnabled = false;
             _gis.Player.Jump.performed += ctx => _jumpEnabled = true;
-            _gis.Player.Shot.performed += ctx => _weaponController.Shot();
+            _gis.Player.Shot.performed += ctx => _weaponController.Fire = true;
+            _gis.Player.Shot.canceled += ctx => _weaponController.Fire = false;
             _gis.Enable();
         }
 

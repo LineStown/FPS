@@ -10,7 +10,7 @@ namespace Assets.SCSIA.Scripts.Actions
         private void OnCollisionEnter(Collision collision)
         {
             ContactPoint contactPoint = collision.contacts[0];
-            Vector3 decalPosition = contactPoint.point + contactPoint.normal * 0.001f;
+            Vector3 decalPosition = contactPoint.point;
             Quaternion rotation = Quaternion.LookRotation(_invertNormal ? -contactPoint.normal : contactPoint.normal);
             Instantiate(_gameObject, decalPosition, rotation);
         }
