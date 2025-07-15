@@ -1,50 +1,160 @@
-﻿using UnityEngine;
+﻿using Assets.SCSIA.Scripts.Data;
+using Assets.SCSIA.Scripts.Enums;
+using Unity.VisualScripting;
+using UnityEngine;
 
 namespace Assets.SCSIA.Scripts.Weapon
 {
-    internal class WeaponController : MonoBehaviour
+    public class WeaponController : MonoBehaviour
     {
-        [Header("Weapon Settings")]
-        [SerializeField] private float _fireSpeed;
-        [SerializeField] private AudioSource _audioSource;
-        [SerializeField] private AudioClip _audioClip;
+        //############################################################################################
+        // FIELDS
+        //############################################################################################
+        private Camera _camera;
+        private WeaponDataModel _weaponData;
+        private Rigidbody _ammoRigidbody;
 
-        [Header("Bullet Settings")]
-        [SerializeField] private Camera _camera;
-        [SerializeField] private Rigidbody _bulletRigidbody;
-        [SerializeField] private Transform _bulletSpawnPoint;
-        [SerializeField] private float _bulletSpeed;
-        [SerializeField] private float _bulletMaxDistance;
+        private WeaponView _weaponView;
+        private AudioSource _audioSource;
 
+        private bool _inited = false;
+
+        private int _currentFireMode;
+        private int _burstCount;
         private float _fireDelay;
-        private float _fireTime;
 
-        public bool Fire { get; set; } = false;
+        private int _magAmmo;
+        private int _totalAmmo;
 
-        private void Awake()
+        private float _nextFireReadyTime;
+        private bool _firing;
+        private float _nextReloadReadyTime;
+        private bool _reloading;
+
+        //############################################################################################
+        // PUBLIC METHODS
+        //############################################################################################
+        public void Initialize(Camera camera, Rigidbody ammoRigidbody, AudioSource audioSource)
         {
-            _fireDelay = 60f / _fireSpeed;
-            _fireTime = Time.time;
-        }
-
-        private void Update()
-        {
-            if(Fire && Time.time > _fireTime)
+            if (!_inited)
             {
-                Shot();
-                _fireTime = Time.time + _fireDelay;
+                _camera = camera;
+                _ammoRigidbody = ammoRigidbody;
+                _audioSource = audioSource;
+                _inited = true;
             }
         }
 
-        private void Shot()
+        public void SpawnWeapon(WeaponDataModel weaponData)
+        {
+            if (_inited)
+            {
+                _weaponData = weaponData;
+                if (_weaponView != null)
+                    Destroy(_weaponView);
+                _weaponView = Instantiate(_weaponData.View, this.transform);
+
+                _currentFireMode = 0;
+                _magAmmo = _weaponData.AmmoConfig.MagCapacity;
+                _totalAmmo = _weaponData.AmmoConfig.TotalCapacity;
+                _firing = false;
+                _reloading = false;
+            }
+        }
+
+        public void StartFire()
+        {
+            if (_magAmmo > 0 && _reloading == false)
+            {
+                _fireDelay = 60f / _weaponData.FireModeConfig[_currentFireMode].FireRate;
+                _burstCount = _weaponData.FireModeConfig[_currentFireMode].BurstCount;
+                _firing = true;
+            }
+            else
+                Reload();
+        }
+
+        public void StopFire()
+        {
+            _firing = false;
+        }
+
+        public void SwitchFireMode()
+        {
+            StopFire();
+            if (_currentFireMode == _weaponData.FireModeConfig.Count - 1)
+                _currentFireMode = 0;
+            else
+                _currentFireMode++;
+        }
+
+        public void Reload()
+        {
+            StopFire();
+            if (_reloading == false && _totalAmmo > 0 && _magAmmo < _weaponData.AmmoConfig.MagCapacity)
+            {
+                _nextReloadReadyTime = Time.time + _weaponData.AmmoConfig.ReloadTime;
+                _reloading = true;
+                _audioSource.PlayOneShot(_weaponData.ReloadSound);
+            }
+        }
+
+        //############################################################################################
+        // PRIVATE UNITY METHODS
+        //############################################################################################
+        private void Update()
+        {
+            CalculateFire();
+        }
+
+        //############################################################################################
+        // PRIVATE METHODS
+        //############################################################################################
+        private void CalculateFire()
+        {
+            float time = Time.time;
+            if (_firing && time > _nextFireReadyTime)
+            {
+                if (_magAmmo == 0)
+                {
+                    Reload();
+                    return;
+                }
+                if (_burstCount == 0)
+                {
+                    StopFire();
+                    return;
+                }
+                _magAmmo--;
+                _burstCount--;
+                _nextFireReadyTime = time + _fireDelay;
+                Debug.Log($"_magAmmo: {_magAmmo}  _burstCount: {_burstCount}  _totalAmmo: {_totalAmmo}");
+                SingleFire();
+            }
+
+            if (_reloading && time >= _nextReloadReadyTime)
+            {
+                _reloading = false;
+                _totalAmmo += _magAmmo;
+                _magAmmo = _weaponData.AmmoConfig.MagCapacity;
+                _totalAmmo -= _magAmmo;
+                if (_totalAmmo < 0)
+                {
+                    _magAmmo += _totalAmmo;
+                    _totalAmmo = 0;
+                }
+            }
+        }
+
+        private void SingleFire()
         {
             Ray ray = _camera.ScreenPointToRay(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
-            Debug.DrawRay(ray.origin, ray.direction * _bulletMaxDistance);
-            Vector3 bulletDirection = (ray.origin + ray.direction * _bulletMaxDistance - _bulletSpawnPoint.position).normalized;
-            Quaternion bulletRotation = Quaternion.LookRotation(bulletDirection);
-            Rigidbody bulletInstance = Instantiate(_bulletRigidbody, _bulletSpawnPoint.position, bulletRotation);
-            bulletInstance.AddForce(bulletDirection * _bulletSpeed, ForceMode.Impulse);
-            _audioSource.PlayOneShot(_audioClip);
+            Debug.DrawRay(ray.origin, ray.direction * _weaponData.AmmoConfig.MaxDistance);
+            Vector3 ammoDirection = (ray.origin + ray.direction * _weaponData.AmmoConfig.MaxDistance - _weaponView.AmmoSpawnPoint.position).normalized;
+            Quaternion ammoRotation = Quaternion.LookRotation(ammoDirection);
+            Rigidbody ammoInstance = Instantiate(_ammoRigidbody, _weaponView.AmmoSpawnPoint.position, ammoRotation);
+            ammoInstance.AddForce(ammoDirection * _weaponData.AmmoConfig.Speed, ForceMode.Impulse);
+            _audioSource.PlayOneShot(_weaponData.FireSound);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Assets.SCSIA.Scripts.Input;
 using Assets.SCSIA.Scripts.Weapon;
+using Assets.SCSIA.Scripts.Weapons;
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -28,8 +29,8 @@ namespace Assets.SCSIA.Scripts.Player
         [SerializeField] private float _airMultiplier = 0.2f;
         [SerializeField] private float _jumpPower = 7f;
 
-        [Header("Weapon Control Settings")]
-        [SerializeField] private WeaponController _weaponController;
+        [Header("Weapon Selector")]
+        [SerializeField] private WeaponSelector _weaponSelector;
 
         private GIS _gis;
         private Vector2 _lookDirection = Vector2.zero;
@@ -87,8 +88,10 @@ namespace Assets.SCSIA.Scripts.Player
             _gis.Player.Sprint.performed += ctx => _sprintEnabled = true;
             _gis.Player.Sprint.canceled += ctx => _sprintEnabled = false;
             _gis.Player.Jump.performed += ctx => _jumpEnabled = true;
-            _gis.Player.Shot.performed += ctx => _weaponController.Fire = true;
-            _gis.Player.Shot.canceled += ctx => _weaponController.Fire = false;
+            _gis.Player.Shot.performed += ctx => _weaponSelector.StartFire();
+            _gis.Player.Shot.canceled += ctx => _weaponSelector.StopFire();
+            _gis.Player.SwitchFireMode.performed += ctx => _weaponSelector.SwitchFireMode();
+            _gis.Player.Reload.performed += ctx => _weaponSelector.Reload();
             _gis.Enable();
         }
 
@@ -98,7 +101,6 @@ namespace Assets.SCSIA.Scripts.Player
             // x
             _lookDirection.x += lookInput.x;
             _playerRigidbody.MoveRotation(Quaternion.Euler(0f, _lookDirection.x, 0f));
-            //transform.Rotate(Vector3.up * lookInput.x);
             // y
             _lookDirection.y -= lookInput.y;
             _lookDirection.y = Mathf.Clamp(_lookDirection.y, _lookMinPitch, _lookMaxPitch);

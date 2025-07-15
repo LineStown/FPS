@@ -4,9 +4,15 @@ namespace Assets.SCSIA.Scripts.Actions
 {
     internal class SpawnOnCollisionEnter : MonoBehaviour
     {
+        //############################################################################################
+        // FIELDS
+        //############################################################################################
         [SerializeField] private GameObject _gameObject;
         [SerializeField] private bool _invertNormal;
 
+        //############################################################################################
+        // PRIVATE UNITY METHODS
+        //############################################################################################
         private void OnCollisionEnter(Collision collision)
         {
             ContactPoint contactPoint = collision.contacts[0];

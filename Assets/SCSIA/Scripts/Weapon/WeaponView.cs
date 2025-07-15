@@ -1,20 +1,17 @@
 ﻿using UnityEngine;
 
-namespace Assets.SCSIA.Scripts.Actions
+namespace Assets.SCSIA.Scripts.Weapon
 {
-    internal class DestroyWithDelay : MonoBehaviour
+    public class WeaponView : MonoBehaviour
     {
         //############################################################################################
         // FIELDS
         //############################################################################################
-        [SerializeField] private float _delay;
+        [SerializeField] private Transform _ammoSpawnPoint;
 
         //############################################################################################
-        // PRIVATE UNITY METHODS
+        // PROPERTIES
         //############################################################################################
-        private void Awake()
-        {
-            Destroy(gameObject, _delay);
-        }
+        public Transform AmmoSpawnPoint => _ammoSpawnPoint;
     }
 }

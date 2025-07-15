@@ -137,6 +137,24 @@ namespace Assets.SCSIA.Scripts.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SwitchFireMode"",
+                    ""type"": ""Button"",
+                    ""id"": ""4d05ae9d-bab1-4be4-bfe7-5e6084b3cda0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""558bf0e6-82fe-47f3-8896-13959fc286e0"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -238,6 +256,28 @@ namespace Assets.SCSIA.Scripts.Input
                     ""action"": ""Shot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9a26d7e2-33cd-4720-8f5d-884364ea6c84"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";PC"",
+                    ""action"": ""SwitchFireMode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""149b37d1-5219-44d4-913d-875352d0b31d"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";PC"",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -257,6 +297,8 @@ namespace Assets.SCSIA.Scripts.Input
             m_Player_Sprint = m_Player.FindAction("Sprint", throwIfNotFound: true);
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
             m_Player_Shot = m_Player.FindAction("Shot", throwIfNotFound: true);
+            m_Player_SwitchFireMode = m_Player.FindAction("SwitchFireMode", throwIfNotFound: true);
+            m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         }
 
         ~@GIS()
@@ -342,6 +384,8 @@ namespace Assets.SCSIA.Scripts.Input
         private readonly InputAction m_Player_Sprint;
         private readonly InputAction m_Player_Jump;
         private readonly InputAction m_Player_Shot;
+        private readonly InputAction m_Player_SwitchFireMode;
+        private readonly InputAction m_Player_Reload;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -373,6 +417,14 @@ namespace Assets.SCSIA.Scripts.Input
             /// Provides access to the underlying input action "Player/Shot".
             /// </summary>
             public InputAction @Shot => m_Wrapper.m_Player_Shot;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/SwitchFireMode".
+            /// </summary>
+            public InputAction @SwitchFireMode => m_Wrapper.m_Player_SwitchFireMode;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/Reload".
+            /// </summary>
+            public InputAction @Reload => m_Wrapper.m_Player_Reload;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -414,6 +466,12 @@ namespace Assets.SCSIA.Scripts.Input
                 @Shot.started += instance.OnShot;
                 @Shot.performed += instance.OnShot;
                 @Shot.canceled += instance.OnShot;
+                @SwitchFireMode.started += instance.OnSwitchFireMode;
+                @SwitchFireMode.performed += instance.OnSwitchFireMode;
+                @SwitchFireMode.canceled += instance.OnSwitchFireMode;
+                @Reload.started += instance.OnReload;
+                @Reload.performed += instance.OnReload;
+                @Reload.canceled += instance.OnReload;
             }
 
             /// <summary>
@@ -440,6 +498,12 @@ namespace Assets.SCSIA.Scripts.Input
                 @Shot.started -= instance.OnShot;
                 @Shot.performed -= instance.OnShot;
                 @Shot.canceled -= instance.OnShot;
+                @SwitchFireMode.started -= instance.OnSwitchFireMode;
+                @SwitchFireMode.performed -= instance.OnSwitchFireMode;
+                @SwitchFireMode.canceled -= instance.OnSwitchFireMode;
+                @Reload.started -= instance.OnReload;
+                @Reload.performed -= instance.OnReload;
+                @Reload.canceled -= instance.OnReload;
             }
 
             /// <summary>
@@ -528,6 +592,20 @@ namespace Assets.SCSIA.Scripts.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnShot(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "SwitchFireMode" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSwitchFireMode(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "Reload" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnReload(InputAction.CallbackContext context);
         }
     }
 }
