@@ -33,3 +33,4 @@ MonoBehaviour:
   _view: {fileID: -8590240177659766776, guid: fa392956c15a6f446b67fabebf19b961, type: 3}
   _fireSound: {fileID: 8300000, guid: a414b4da0d4458442b6039ce81241e99, type: 3}
   _reloadSound: {fileID: 8300000, guid: f4a563547c933d7499244ba89f3423ea, type: 3}
+  _switchFireModeSound: {fileID: 8300000, guid: 24132f63a174db54faaa47a54d43e5c2, type: 3}

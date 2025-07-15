@@ -27,6 +27,7 @@ namespace Assets.SCSIA.Scripts.Data
         [Header("Audio")]
         [SerializeField] private AudioClip _fireSound;
         [SerializeField] private AudioClip _reloadSound;
+        [SerializeField] private AudioClip _switchFireModeSound;
 
         //############################################################################################
         // PROPERTIES
@@ -42,5 +43,6 @@ namespace Assets.SCSIA.Scripts.Data
 
         public AudioClip FireSound => _fireSound;
         public AudioClip ReloadSound => _reloadSound;
+        public AudioClip SwitchFireModeSound => _switchFireModeSound;
     }
 }

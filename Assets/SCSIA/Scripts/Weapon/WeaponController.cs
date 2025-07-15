@@ -64,7 +64,9 @@ namespace Assets.SCSIA.Scripts.Weapon
 
         public void StartFire()
         {
-            if (_magAmmo > 0 && _reloading == false)
+            if (_reloading == true)
+                return;
+            if (_magAmmo > 0)
             {
                 _fireDelay = 60f / _weaponData.FireModeConfig[_currentFireMode].FireRate;
                 _burstCount = _weaponData.FireModeConfig[_currentFireMode].BurstCount;
@@ -86,17 +88,22 @@ namespace Assets.SCSIA.Scripts.Weapon
                 _currentFireMode = 0;
             else
                 _currentFireMode++;
+            _audioSource.PlayOneShot(_weaponData.SwitchFireModeSound);
         }
 
         public void Reload()
         {
             StopFire();
-            if (_reloading == false && _totalAmmo > 0 && _magAmmo < _weaponData.AmmoConfig.MagCapacity)
-            {
-                _nextReloadReadyTime = Time.time + _weaponData.AmmoConfig.ReloadTime;
-                _reloading = true;
-                _audioSource.PlayOneShot(_weaponData.ReloadSound);
-            }
+            if (_reloading == true)
+                return;
+            if (_totalAmmo == 0)
+                return;
+            if (_magAmmo == _weaponData.AmmoConfig.MagCapacity)
+                return;
+
+            _nextReloadReadyTime = Time.time + _weaponData.AmmoConfig.ReloadTime;
+            _reloading = true;
+            _audioSource.PlayOneShot(_weaponData.ReloadSound);
         }
 
         //############################################################################################
@@ -134,7 +141,6 @@ namespace Assets.SCSIA.Scripts.Weapon
 
             if (_reloading && time >= _nextReloadReadyTime)
             {
-                _reloading = false;
                 _totalAmmo += _magAmmo;
                 _magAmmo = _weaponData.AmmoConfig.MagCapacity;
                 _totalAmmo -= _magAmmo;
@@ -143,6 +149,7 @@ namespace Assets.SCSIA.Scripts.Weapon
                     _magAmmo += _totalAmmo;
                     _totalAmmo = 0;
                 }
+                _reloading = false;
             }
         }
 
