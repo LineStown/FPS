@@ -14,23 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 0
   _slot: 0
+  _controller: {fileID: 4884689045285846942, guid: fa392956c15a6f446b67fabebf19b961, type: 3}
+  _fireRate: 600
+  _maxDistance: 300
+  _deltaSpread: 1
+  _maxSpread: 10
+  _magCapacity: 30
+  _totalCapacity: 120
+  _reloadTime: 2
   _fireModeConfig:
   - _fireMode: 2
-    _fireRate: 600
-    _burstCount: 30
+    _burstShotsCount: 30
   - _fireMode: 0
-    _fireRate: 600
-    _burstCount: 1
+    _burstShotsCount: 3
   - _fireMode: 1
-    _fireRate: 600
-    _burstCount: 3
+    _burstShotsCount: 1
   _ammoConfig:
     _speed: 10
-    _maxDistance: 300
-    _magCapacity: 30
-    _totalCapacity: 300
-    _reloaadTime: 2
-  _view: {fileID: -8590240177659766776, guid: fa392956c15a6f446b67fabebf19b961, type: 3}
   _fireSound: {fileID: 8300000, guid: a414b4da0d4458442b6039ce81241e99, type: 3}
+  _emptySound: {fileID: 8300000, guid: bbba48204f599cf42861ed97d0de197a, type: 3}
   _reloadSound: {fileID: 8300000, guid: f4a563547c933d7499244ba89f3423ea, type: 3}
   _switchFireModeSound: {fileID: 8300000, guid: 24132f63a174db54faaa47a54d43e5c2, type: 3}

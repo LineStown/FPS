@@ -92,6 +92,10 @@ namespace Assets.SCSIA.Scripts.Player
             _gis.Player.Shot.canceled += ctx => _weaponSelector.StopFire();
             _gis.Player.SwitchFireMode.performed += ctx => _weaponSelector.SwitchFireMode();
             _gis.Player.Reload.performed += ctx => _weaponSelector.Reload();
+            _gis.Player.PrimarySlot.performed += ctx => _weaponSelector.SwitchWeaponSlot(Enums.WeaponSlot.Primary);
+            _gis.Player.SecondarySlot.performed += ctx => _weaponSelector.SwitchWeaponSlot(Enums.WeaponSlot.Secondary);
+            _gis.Player.PistolSlot.performed += ctx => _weaponSelector.SwitchWeaponSlot(Enums.WeaponSlot.Pistol);
+            _gis.Player.BuyAmmo.performed += ctx => _weaponSelector.BuyAmmo();
             _gis.Enable();
         }
 

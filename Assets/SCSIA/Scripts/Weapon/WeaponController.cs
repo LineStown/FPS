@@ -1,5 +1,6 @@
 ﻿using Assets.SCSIA.Scripts.Data;
 using Assets.SCSIA.Scripts.Enums;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -10,18 +11,23 @@ namespace Assets.SCSIA.Scripts.Weapon
         //############################################################################################
         // FIELDS
         //############################################################################################
+        [Header("Ammo")]
+        [SerializeField] private Rigidbody _ammoRigidbody;
+        [SerializeField] private Transform _ammoSpawnPoint;
+
+        [Header("Audio Source")]
+        [SerializeField] private AudioSource _audioSource;
+
         private Camera _camera;
         private WeaponDataModel _weaponData;
-        private Rigidbody _ammoRigidbody;
-
-        private WeaponView _weaponView;
-        private AudioSource _audioSource;
-
-        private bool _inited = false;
+        private TextMeshProUGUI _ammoText;
 
         private int _currentFireMode;
-        private int _burstCount;
         private float _fireDelay;
+
+        private int _burstShotsCount;
+        private int _burstShotsCountDone;
+        private float _currentSpread;
 
         private int _magAmmo;
         private int _totalAmmo;
@@ -32,34 +38,25 @@ namespace Assets.SCSIA.Scripts.Weapon
         private bool _reloading;
 
         //############################################################################################
+        // PROPERTIES
+        //############################################################################################
+        public WeaponSlot Slot => _weaponData.Slot;
+
+        //############################################################################################
         // PUBLIC METHODS
         //############################################################################################
-        public void Initialize(Camera camera, Rigidbody ammoRigidbody, AudioSource audioSource)
+        public void Init(WeaponDataModel weaponData, TextMeshProUGUI ammoText)
         {
-            if (!_inited)
-            {
-                _camera = camera;
-                _ammoRigidbody = ammoRigidbody;
-                _audioSource = audioSource;
-                _inited = true;
-            }
-        }
-
-        public void SpawnWeapon(WeaponDataModel weaponData)
-        {
-            if (_inited)
-            {
-                _weaponData = weaponData;
-                if (_weaponView != null)
-                    Destroy(_weaponView);
-                _weaponView = Instantiate(_weaponData.View, this.transform);
-
-                _currentFireMode = 0;
-                _magAmmo = _weaponData.AmmoConfig.MagCapacity;
-                _totalAmmo = _weaponData.AmmoConfig.TotalCapacity;
-                _firing = false;
-                _reloading = false;
-            }
+            _camera = Camera.main;
+            _weaponData = weaponData;
+            _ammoText = ammoText;
+            _currentFireMode = 0;
+            _fireDelay = 60f / _weaponData.FireRate;
+            _magAmmo = _weaponData.MagCapacity;
+            _totalAmmo = _weaponData.TotalCapacity;
+            _firing = false;
+            _reloading = false;
+            UpdateAmmoText();
         }
 
         public void StartFire()
@@ -68,12 +65,15 @@ namespace Assets.SCSIA.Scripts.Weapon
                 return;
             if (_magAmmo > 0)
             {
-                _fireDelay = 60f / _weaponData.FireModeConfig[_currentFireMode].FireRate;
-                _burstCount = _weaponData.FireModeConfig[_currentFireMode].BurstCount;
+                _burstShotsCount = _weaponData.FireModeConfig[_currentFireMode].BurstShotsCount;
+                _burstShotsCountDone = 0;
                 _firing = true;
             }
             else
+            {
+                _audioSource.PlayOneShot(_weaponData.EmptySound);
                 Reload();
+            }
         }
 
         public void StopFire()
@@ -83,6 +83,10 @@ namespace Assets.SCSIA.Scripts.Weapon
 
         public void SwitchFireMode()
         {
+            // don't switch if only 1 mode
+            if (_weaponData.FireModeConfig.Count == 1)
+                return;
+            // switch
             StopFire();
             if (_currentFireMode == _weaponData.FireModeConfig.Count - 1)
                 _currentFireMode = 0;
@@ -98,12 +102,18 @@ namespace Assets.SCSIA.Scripts.Weapon
                 return;
             if (_totalAmmo == 0)
                 return;
-            if (_magAmmo == _weaponData.AmmoConfig.MagCapacity)
+            if (_magAmmo == _weaponData.MagCapacity)
                 return;
 
-            _nextReloadReadyTime = Time.time + _weaponData.AmmoConfig.ReloadTime;
+            _nextReloadReadyTime = Time.time + _weaponData.ReloadTime;
             _reloading = true;
             _audioSource.PlayOneShot(_weaponData.ReloadSound);
+        }
+
+        public void BuyAmmo()
+        {
+            _totalAmmo = _weaponData.TotalCapacity;
+            UpdateAmmoText();
         }
 
         //############################################################################################
@@ -124,25 +134,32 @@ namespace Assets.SCSIA.Scripts.Weapon
             {
                 if (_magAmmo == 0)
                 {
+                    _audioSource.PlayOneShot(_weaponData.EmptySound);
                     Reload();
                     return;
                 }
-                if (_burstCount == 0)
+                if (_burstShotsCount == 0)
                 {
                     StopFire();
                     return;
                 }
+                // spread by shot
+                _currentSpread = _weaponData.DeltaSpread + _weaponData.DeltaSpread * _burstShotsCountDone;
+                if (_currentSpread > _weaponData.MaxSpread)
+                    _currentSpread = _weaponData.MaxSpread;
+                SingleShot();
                 _magAmmo--;
-                _burstCount--;
+                _burstShotsCount--;
+                _burstShotsCountDone++;
                 _nextFireReadyTime = time + _fireDelay;
-                Debug.Log($"_magAmmo: {_magAmmo}  _burstCount: {_burstCount}  _totalAmmo: {_totalAmmo}");
-                SingleFire();
+                UpdateAmmoText();
+                Debug.Log($"_magAmmo: {_magAmmo}  _burstCount: {_burstShotsCount}  _totalAmmo: {_totalAmmo}");
             }
 
             if (_reloading && time >= _nextReloadReadyTime)
             {
                 _totalAmmo += _magAmmo;
-                _magAmmo = _weaponData.AmmoConfig.MagCapacity;
+                _magAmmo = _weaponData.MagCapacity;
                 _totalAmmo -= _magAmmo;
                 if (_totalAmmo < 0)
                 {
@@ -150,18 +167,29 @@ namespace Assets.SCSIA.Scripts.Weapon
                     _totalAmmo = 0;
                 }
                 _reloading = false;
+                UpdateAmmoText();
             }
         }
 
-        private void SingleFire()
+        private void SingleShot()
         {
             Ray ray = _camera.ScreenPointToRay(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
-            Debug.DrawRay(ray.origin, ray.direction * _weaponData.AmmoConfig.MaxDistance);
-            Vector3 ammoDirection = (ray.origin + ray.direction * _weaponData.AmmoConfig.MaxDistance - _weaponView.AmmoSpawnPoint.position).normalized;
+            // calculate final point with spread
+            Vector3 ammoFinalPoint = ray.direction * _weaponData.MaxDistance;
+            ammoFinalPoint.x += Random.Range(-_currentSpread, _currentSpread);
+            ammoFinalPoint.y += Random.Range(-_currentSpread, _currentSpread);
+            ammoFinalPoint.z += Random.Range(-_currentSpread, _currentSpread);
+            Debug.DrawRay(ray.origin, ray.direction * _weaponData.MaxDistance);
+            Vector3 ammoDirection = (ray.origin + ammoFinalPoint - _ammoSpawnPoint.position).normalized;
             Quaternion ammoRotation = Quaternion.LookRotation(ammoDirection);
-            Rigidbody ammoInstance = Instantiate(_ammoRigidbody, _weaponView.AmmoSpawnPoint.position, ammoRotation);
+            Rigidbody ammoInstance = Instantiate(_ammoRigidbody, _ammoSpawnPoint.position, ammoRotation);
             ammoInstance.AddForce(ammoDirection * _weaponData.AmmoConfig.Speed, ForceMode.Impulse);
             _audioSource.PlayOneShot(_weaponData.FireSound);
+        }
+
+        private void UpdateAmmoText()
+        {
+            _ammoText.text = _magAmmo + "/" + _totalAmmo;
         }
     }
 }

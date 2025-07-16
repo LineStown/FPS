@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Assets.SCSIA.Scripts.Data;
+﻿using Assets.SCSIA.Scripts.Data;
 using Assets.SCSIA.Scripts.Enums;
 using Assets.SCSIA.Scripts.Weapon;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Assets.SCSIA.Scripts.Weapons
@@ -14,9 +13,8 @@ namespace Assets.SCSIA.Scripts.Weapons
         // FIELDS
         //############################################################################################
         [Header("Selector Data")]
-        [SerializeField] private Camera _camera;
         [SerializeField] private WeaponSelectorDataModel _weaponSelectorData;
-        [SerializeField] private AudioSource _audioSource;
+        [SerializeField] private TextMeshProUGUI _ammoText;
 
         private Dictionary<WeaponSlot, WeaponController> _weaponSlots;
         private Dictionary<WeaponId, WeaponDataModel> _availableWeapons;
@@ -34,24 +32,25 @@ namespace Assets.SCSIA.Scripts.Weapons
 
         public void SpawnWeapon(WeaponId id)
         {
-            if (_availableWeapons.ContainsKey(id))
+            if (_availableWeapons.ContainsKey(id) && _weaponSlots[_availableWeapons[id].Slot] == null)
             {
-                _weaponSlots[_availableWeapons[id].Slot].SpawnWeapon(_availableWeapons[id]);
+                _weaponSlots[_availableWeapons[id].Slot] = Instantiate(_availableWeapons[id].Controller, transform);
+                _weaponSlots[_availableWeapons[id].Slot].Init(_availableWeapons[id], _ammoText);
                 SwitchWeaponSlot(_availableWeapons[id].Slot);
             }
             else
                 Debug.LogError($"Failed to spawn Weapon {id}. Weapon is not available");
         }
 
-        public void SwitchWeaponSlot(WeaponSlot slot)
+        public void SwitchWeaponSlot(WeaponSlot newWeaponSlot)
         {
-            if (_weaponSlots.ContainsKey(slot) && _currentWeaponSlot != slot)
-            {
-                foreach (var weaponRuntime in _weaponSlots.Values)
-                    weaponRuntime.gameObject.SetActive(false);
-                _currentWeaponSlot = slot;
-                _weaponSlots[_currentWeaponSlot].gameObject.SetActive(true);
-            }
+            if (!_weaponSlots.ContainsKey(newWeaponSlot) || _currentWeaponSlot == newWeaponSlot || _weaponSlots[newWeaponSlot] == null)
+                return;
+            foreach (var weaponController in _weaponSlots.Values)
+                if (weaponController != null)
+                    weaponController.gameObject.SetActive(false);
+            _weaponSlots[newWeaponSlot].gameObject.SetActive(true);
+            _currentWeaponSlot = newWeaponSlot;
         }
         public void StartFire()
         {
@@ -73,6 +72,11 @@ namespace Assets.SCSIA.Scripts.Weapons
             _weaponSlots[_currentWeaponSlot].Reload();
         }
 
+        public void BuyAmmo()
+        {
+            _weaponSlots[_currentWeaponSlot].BuyAmmo();
+        }
+
         //############################################################################################
         // PRIVATE METHODS
         //############################################################################################
@@ -85,11 +89,7 @@ namespace Assets.SCSIA.Scripts.Weapons
             }
             _weaponSlots = new Dictionary<WeaponSlot, WeaponController>();
             foreach (WeaponSlot slot in _weaponSelectorData.AvailableSlots)
-            {
-                _weaponSlots[slot] = new GameObject(slot.ToString()).AddComponent<WeaponController>();
-                _weaponSlots[slot].transform.SetParent(this.transform, false);
-                _weaponSlots[slot].Initialize(_camera, _weaponSelectorData.AmmoRigidbody, _audioSource);
-            }
+                _weaponSlots[slot] = null;
             SwitchWeaponSlot(_weaponSelectorData.AvailableSlots[0]);
         }
 

@@ -155,6 +155,42 @@ namespace Assets.SCSIA.Scripts.Input
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PrimarySlot"",
+                    ""type"": ""Button"",
+                    ""id"": ""61b70b3f-f195-40ab-badd-9592de668e09"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""SecondarySlot"",
+                    ""type"": ""Button"",
+                    ""id"": ""76d0c9fa-a6be-447d-b4f8-83e78c2c963d"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""PistolSlot"",
+                    ""type"": ""Button"",
+                    ""id"": ""d3b02508-6b24-497f-b984-0ae290d9e9f2"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""BuyAmmo"",
+                    ""type"": ""Button"",
+                    ""id"": ""54f745ce-7e64-4996-83bd-8f4bb7f6d241"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -278,6 +314,50 @@ namespace Assets.SCSIA.Scripts.Input
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""52d83cf7-9130-4757-911a-b3ebb70f408a"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";PC"",
+                    ""action"": ""PrimarySlot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7c4466ea-683d-4403-be6c-a5cde5c7ca66"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SecondarySlot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c3424f6b-12af-4149-91c4-30bd5a6f55f3"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";PC"",
+                    ""action"": ""PistolSlot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""eb9e581f-c0ad-4184-a713-535c1f8c3950"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";PC"",
+                    ""action"": ""BuyAmmo"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -299,6 +379,10 @@ namespace Assets.SCSIA.Scripts.Input
             m_Player_Shot = m_Player.FindAction("Shot", throwIfNotFound: true);
             m_Player_SwitchFireMode = m_Player.FindAction("SwitchFireMode", throwIfNotFound: true);
             m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
+            m_Player_PrimarySlot = m_Player.FindAction("PrimarySlot", throwIfNotFound: true);
+            m_Player_SecondarySlot = m_Player.FindAction("SecondarySlot", throwIfNotFound: true);
+            m_Player_PistolSlot = m_Player.FindAction("PistolSlot", throwIfNotFound: true);
+            m_Player_BuyAmmo = m_Player.FindAction("BuyAmmo", throwIfNotFound: true);
         }
 
         ~@GIS()
@@ -386,6 +470,10 @@ namespace Assets.SCSIA.Scripts.Input
         private readonly InputAction m_Player_Shot;
         private readonly InputAction m_Player_SwitchFireMode;
         private readonly InputAction m_Player_Reload;
+        private readonly InputAction m_Player_PrimarySlot;
+        private readonly InputAction m_Player_SecondarySlot;
+        private readonly InputAction m_Player_PistolSlot;
+        private readonly InputAction m_Player_BuyAmmo;
         /// <summary>
         /// Provides access to input actions defined in input action map "Player".
         /// </summary>
@@ -425,6 +513,22 @@ namespace Assets.SCSIA.Scripts.Input
             /// Provides access to the underlying input action "Player/Reload".
             /// </summary>
             public InputAction @Reload => m_Wrapper.m_Player_Reload;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/PrimarySlot".
+            /// </summary>
+            public InputAction @PrimarySlot => m_Wrapper.m_Player_PrimarySlot;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/SecondarySlot".
+            /// </summary>
+            public InputAction @SecondarySlot => m_Wrapper.m_Player_SecondarySlot;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/PistolSlot".
+            /// </summary>
+            public InputAction @PistolSlot => m_Wrapper.m_Player_PistolSlot;
+            /// <summary>
+            /// Provides access to the underlying input action "Player/BuyAmmo".
+            /// </summary>
+            public InputAction @BuyAmmo => m_Wrapper.m_Player_BuyAmmo;
             /// <summary>
             /// Provides access to the underlying input action map instance.
             /// </summary>
@@ -472,6 +576,18 @@ namespace Assets.SCSIA.Scripts.Input
                 @Reload.started += instance.OnReload;
                 @Reload.performed += instance.OnReload;
                 @Reload.canceled += instance.OnReload;
+                @PrimarySlot.started += instance.OnPrimarySlot;
+                @PrimarySlot.performed += instance.OnPrimarySlot;
+                @PrimarySlot.canceled += instance.OnPrimarySlot;
+                @SecondarySlot.started += instance.OnSecondarySlot;
+                @SecondarySlot.performed += instance.OnSecondarySlot;
+                @SecondarySlot.canceled += instance.OnSecondarySlot;
+                @PistolSlot.started += instance.OnPistolSlot;
+                @PistolSlot.performed += instance.OnPistolSlot;
+                @PistolSlot.canceled += instance.OnPistolSlot;
+                @BuyAmmo.started += instance.OnBuyAmmo;
+                @BuyAmmo.performed += instance.OnBuyAmmo;
+                @BuyAmmo.canceled += instance.OnBuyAmmo;
             }
 
             /// <summary>
@@ -504,6 +620,18 @@ namespace Assets.SCSIA.Scripts.Input
                 @Reload.started -= instance.OnReload;
                 @Reload.performed -= instance.OnReload;
                 @Reload.canceled -= instance.OnReload;
+                @PrimarySlot.started -= instance.OnPrimarySlot;
+                @PrimarySlot.performed -= instance.OnPrimarySlot;
+                @PrimarySlot.canceled -= instance.OnPrimarySlot;
+                @SecondarySlot.started -= instance.OnSecondarySlot;
+                @SecondarySlot.performed -= instance.OnSecondarySlot;
+                @SecondarySlot.canceled -= instance.OnSecondarySlot;
+                @PistolSlot.started -= instance.OnPistolSlot;
+                @PistolSlot.performed -= instance.OnPistolSlot;
+                @PistolSlot.canceled -= instance.OnPistolSlot;
+                @BuyAmmo.started -= instance.OnBuyAmmo;
+                @BuyAmmo.performed -= instance.OnBuyAmmo;
+                @BuyAmmo.canceled -= instance.OnBuyAmmo;
             }
 
             /// <summary>
@@ -606,6 +734,34 @@ namespace Assets.SCSIA.Scripts.Input
             /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
             /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
             void OnReload(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "PrimarySlot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPrimarySlot(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "SecondarySlot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnSecondarySlot(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "PistolSlot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnPistolSlot(InputAction.CallbackContext context);
+            /// <summary>
+            /// Method invoked when associated input action "BuyAmmo" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+            /// </summary>
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+            /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+            void OnBuyAmmo(InputAction.CallbackContext context);
         }
     }
 }

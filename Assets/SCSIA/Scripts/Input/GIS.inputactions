@@ -67,6 +67,42 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "PrimarySlot",
+                    "type": "Button",
+                    "id": "61b70b3f-f195-40ab-badd-9592de668e09",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SecondarySlot",
+                    "type": "Button",
+                    "id": "76d0c9fa-a6be-447d-b4f8-83e78c2c963d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PistolSlot",
+                    "type": "Button",
+                    "id": "d3b02508-6b24-497f-b984-0ae290d9e9f2",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "BuyAmmo",
+                    "type": "Button",
+                    "id": "54f745ce-7e64-4996-83bd-8f4bb7f6d241",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -188,6 +224,50 @@
                     "processors": "",
                     "groups": ";PC",
                     "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "52d83cf7-9130-4757-911a-b3ebb70f408a",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";PC",
+                    "action": "PrimarySlot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7c4466ea-683d-4403-be6c-a5cde5c7ca66",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SecondarySlot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "c3424f6b-12af-4149-91c4-30bd5a6f55f3",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";PC",
+                    "action": "PistolSlot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eb9e581f-c0ad-4184-a713-535c1f8c3950",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";PC",
+                    "action": "BuyAmmo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

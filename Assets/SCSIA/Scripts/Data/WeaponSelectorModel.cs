@@ -1,4 +1,5 @@
 ﻿using Assets.SCSIA.Scripts.Enums;
+using Assets.SCSIA.Scripts.Weapon;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,9 +11,6 @@ namespace Assets.SCSIA.Scripts.Data
         //############################################################################################
         // FIELDS
         //############################################################################################
-        [Header("Ammo Rigidbody")]
-        [SerializeField] private Rigidbody _ammoRigidbody;
-
         [Header("Available Weapon Slots")]
         [SerializeField] private List<WeaponSlot> _availableSlots;
 
@@ -22,8 +20,6 @@ namespace Assets.SCSIA.Scripts.Data
         //############################################################################################
         // PROPERTIES
         //############################################################################################
-        public Rigidbody AmmoRigidbody => _ammoRigidbody;
-
         public IReadOnlyList<WeaponSlot> AvailableSlots => _availableSlots;
         public IReadOnlyList<WeaponDataModel> AvalaibleWeapons => _avalaibleWeapons;
     }
