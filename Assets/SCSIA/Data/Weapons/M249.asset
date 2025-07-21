@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 1
   _slot: 0
-  _fireRate: 800
+  _fireRate: 600
   _maxDistance: 300
   _deltaSpread: 3
   _maxSpread: 20
