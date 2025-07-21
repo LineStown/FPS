@@ -1,8 +1,6 @@
-﻿using Assets.SCSIA.Scripts.Data;
-using Assets.SCSIA.Scripts.Enums;
+﻿using Assets.SCSIA.Scripts.Enums;
 using Assets.SCSIA.Scripts.Weapon;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 namespace Assets.SCSIA.Scripts.Weapons
@@ -13,68 +11,96 @@ namespace Assets.SCSIA.Scripts.Weapons
         // FIELDS
         //############################################################################################
         [Header("Selector Data")]
-        [SerializeField] private WeaponSelectorDataModel _weaponSelectorData;
-        [SerializeField] private TextMeshProUGUI _ammoText;
+        [SerializeField] private List<WeaponSlot> _availableSlots;
+        [SerializeField] private Transform _weaponSpot;
+        [SerializeField] private float _pickupDistance;
 
         private Dictionary<WeaponSlot, WeaponController> _weaponSlots;
-        private Dictionary<WeaponId, WeaponDataModel> _availableWeapons;
-
         private WeaponSlot _currentWeaponSlot;
 
         //############################################################################################
         // PUBLIC METHODS
         //############################################################################################
-        public void Initialize()
+        public void Init()
         {
             CreateWeaponSlots();
-            CreateAvailableWeapons();
         }
 
-        public void SpawnWeapon(WeaponId id)
+        public void AttachWeapon(WeaponController weapon)
         {
-            if (_availableWeapons.ContainsKey(id) && _weaponSlots[_availableWeapons[id].Slot] == null)
-            {
-                _weaponSlots[_availableWeapons[id].Slot] = Instantiate(_availableWeapons[id].Controller, transform);
-                _weaponSlots[_availableWeapons[id].Slot].Init(_availableWeapons[id], _ammoText);
-                SwitchWeaponSlot(_availableWeapons[id].Slot);
-            }
-            else
-                Debug.LogError($"Failed to spawn Weapon {id}. Weapon is not available");
+            if (_currentWeaponSlot == weapon.Slot)
+                DropWeapon();
+            weapon.gameObject.transform.SetParent(_weaponSpot, false);
+            weapon.transform.SetLocalPositionAndRotation(Vector3.zero, Quaternion.identity);
+            _weaponSlots[weapon.Slot] = weapon;
+            SwitchWeaponSlot(weapon.Slot);
         }
 
-        public void SwitchWeaponSlot(WeaponSlot newWeaponSlot)
+        public WeaponController DetachWeapon()
         {
-            if (!_weaponSlots.ContainsKey(newWeaponSlot) || _currentWeaponSlot == newWeaponSlot || _weaponSlots[newWeaponSlot] == null)
+            if (_weaponSlots[_currentWeaponSlot] == null)
+                return null;
+            var weapon = _weaponSlots[_currentWeaponSlot];
+            weapon.transform.SetParent(null);
+            _weaponSlots[_currentWeaponSlot] = null;
+            return weapon;
+        }
+
+        public void PickupWeapon()
+        {
+            Ray ray = new Ray(_weaponSpot.position, _weaponSpot.forward);
+            Debug.DrawRay(ray.origin, ray.direction * _pickupDistance, Color.green);
+            if (Physics.Raycast(ray, out var hit, _pickupDistance))
+                if (hit.transform.TryGetComponent(out WeaponController weaponController))
+                {
+                    weaponController.PickupItem();
+                    AttachWeapon(weaponController);
+                }
+        }
+
+        public void DropWeapon()
+        {
+            if (_weaponSlots[_currentWeaponSlot] == null)
+                return;
+            var weapon = (_weaponSlots[_currentWeaponSlot]);
+            DetachWeapon();
+            weapon.transform.Rotate(Random.Range(0,360), Random.Range(0, 360), Random.Range(0, 360));
+            weapon.DropItem(_weaponSpot.forward);
+        }
+
+        public void SwitchWeaponSlot(WeaponSlot slot)
+        {
+            if (!_weaponSlots.ContainsKey(slot) || _currentWeaponSlot == slot || _weaponSlots[slot] == null)
                 return;
             foreach (var weaponController in _weaponSlots.Values)
                 if (weaponController != null)
                     weaponController.gameObject.SetActive(false);
-            _weaponSlots[newWeaponSlot].gameObject.SetActive(true);
-            _currentWeaponSlot = newWeaponSlot;
+            _weaponSlots[slot].gameObject.SetActive(true);
+            _currentWeaponSlot = slot;
         }
         public void StartFire()
         {
-            _weaponSlots[_currentWeaponSlot].StartFire();
+            _weaponSlots[_currentWeaponSlot]?.StartFire();
         }
 
         public void StopFire()
         {
-            _weaponSlots[_currentWeaponSlot].StopFire();
+            _weaponSlots[_currentWeaponSlot]?.StopFire();
         }
 
         public void SwitchFireMode()
         {
-            _weaponSlots[_currentWeaponSlot].SwitchFireMode();
+            _weaponSlots[_currentWeaponSlot]?.SwitchFireMode();
         }
 
         public void Reload()
         {
-            _weaponSlots[_currentWeaponSlot].Reload();
+            _weaponSlots[_currentWeaponSlot]?.Reload();
         }
 
         public void BuyAmmo()
         {
-            _weaponSlots[_currentWeaponSlot].BuyAmmo();
+            _weaponSlots[_currentWeaponSlot]?.BuyAmmo();
         }
 
         //############################################################################################
@@ -82,27 +108,15 @@ namespace Assets.SCSIA.Scripts.Weapons
         //############################################################################################
         private void CreateWeaponSlots()
         {
-            if(_weaponSelectorData.AvailableSlots.Count == 0)
+            if (_availableSlots.Count == 0)
             {
-                Debug.LogError("Failed to create WeaponSlots. Configuration is empty");
+                Debug.LogError("WeaponSelector. Failed to create WeaponSlots. Configuration is empty");
                 return;
             }
             _weaponSlots = new Dictionary<WeaponSlot, WeaponController>();
-            foreach (WeaponSlot slot in _weaponSelectorData.AvailableSlots)
+            foreach (WeaponSlot slot in _availableSlots)
                 _weaponSlots[slot] = null;
-            SwitchWeaponSlot(_weaponSelectorData.AvailableSlots[0]);
-        }
-
-        private void CreateAvailableWeapons()
-        {
-            _availableWeapons = new Dictionary<WeaponId, WeaponDataModel>();
-            foreach (var weapon in _weaponSelectorData.AvalaibleWeapons)
-            {
-                if (_weaponSlots.ContainsKey(weapon.Slot))
-                    _availableWeapons[weapon.Id] = weapon;
-                else
-                    Debug.LogError($"Failed to add Weapon {weapon.Id}. Slot {weapon.Slot} is not available");
-            }
+            SwitchWeaponSlot(_availableSlots[0]);
         }
     }
 }

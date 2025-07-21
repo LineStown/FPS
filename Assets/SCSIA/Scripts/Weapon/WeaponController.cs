@@ -1,26 +1,25 @@
-﻿using Assets.SCSIA.Scripts.Data;
+﻿using Assets.SCSIA.Scripts.Core;
+using Assets.SCSIA.Scripts.DataModel;
 using Assets.SCSIA.Scripts.Enums;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
+
 
 namespace Assets.SCSIA.Scripts.Weapon
 {
-    public class WeaponController : MonoBehaviour
+    public class WeaponController : PickupableItem
     {
         //############################################################################################
         // FIELDS
         //############################################################################################
+        [Header("Weapon Data")]
+        [SerializeField] private WeaponDataModel _weaponData;
+
         [Header("Ammo")]
         [SerializeField] private Rigidbody _ammoRigidbody;
         [SerializeField] private Transform _ammoSpawnPoint;
 
-        [Header("Audio Source")]
+        [Header("Audio")]
         [SerializeField] private AudioSource _audioSource;
-
-        private Camera _camera;
-        private WeaponDataModel _weaponData;
-        private TextMeshProUGUI _ammoText;
 
         private int _currentFireMode;
         private float _fireDelay;
@@ -40,23 +39,20 @@ namespace Assets.SCSIA.Scripts.Weapon
         //############################################################################################
         // PROPERTIES
         //############################################################################################
+        public WeaponId Id => _weaponData.Id;
         public WeaponSlot Slot => _weaponData.Slot;
 
         //############################################################################################
         // PUBLIC METHODS
         //############################################################################################
-        public void Init(WeaponDataModel weaponData, TextMeshProUGUI ammoText)
+        public void Init()
         {
-            _camera = Camera.main;
-            _weaponData = weaponData;
-            _ammoText = ammoText;
             _currentFireMode = 0;
             _fireDelay = 60f / _weaponData.FireRate;
             _magAmmo = _weaponData.MagCapacity;
             _totalAmmo = _weaponData.TotalCapacity;
             _firing = false;
             _reloading = false;
-            UpdateAmmoText();
         }
 
         public void StartFire()
@@ -113,7 +109,6 @@ namespace Assets.SCSIA.Scripts.Weapon
         public void BuyAmmo()
         {
             _totalAmmo = _weaponData.TotalCapacity;
-            UpdateAmmoText();
         }
 
         //############################################################################################
@@ -152,7 +147,6 @@ namespace Assets.SCSIA.Scripts.Weapon
                 _burstShotsCount--;
                 _burstShotsCountDone++;
                 _nextFireReadyTime = time + _fireDelay;
-                UpdateAmmoText();
                 Debug.Log($"_magAmmo: {_magAmmo}  _burstCount: {_burstShotsCount}  _totalAmmo: {_totalAmmo}");
             }
 
@@ -167,29 +161,28 @@ namespace Assets.SCSIA.Scripts.Weapon
                     _totalAmmo = 0;
                 }
                 _reloading = false;
-                UpdateAmmoText();
             }
         }
 
         private void SingleShot()
         {
-            Ray ray = _camera.ScreenPointToRay(new Vector2(Screen.width * 0.5f, Screen.height * 0.5f));
-            // calculate final point with spread
-            Vector3 ammoFinalPoint = ray.direction * _weaponData.MaxDistance;
-            ammoFinalPoint.x += Random.Range(-_currentSpread, _currentSpread);
-            ammoFinalPoint.y += Random.Range(-_currentSpread, _currentSpread);
-            ammoFinalPoint.z += Random.Range(-_currentSpread, _currentSpread);
-            Debug.DrawRay(ray.origin, ray.direction * _weaponData.MaxDistance);
-            Vector3 ammoDirection = (ray.origin + ammoFinalPoint - _ammoSpawnPoint.position).normalized;
-            Quaternion ammoRotation = Quaternion.LookRotation(ammoDirection);
-            Rigidbody ammoInstance = Instantiate(_ammoRigidbody, _ammoSpawnPoint.position, ammoRotation);
-            ammoInstance.AddForce(ammoDirection * _weaponData.AmmoConfig.Speed, ForceMode.Impulse);
+            for (int i = 0; i < _weaponData.FireModeConfig[_currentFireMode].CartridgeShotsCount; i++)
+            {
+                Ray ray = new Ray(transform.parent.transform.position, transform.parent.transform.forward);
+                // calculate final point with spread
+                Vector3 ammoFinalPoint = ray.direction * _weaponData.MaxDistance;
+                ammoFinalPoint.x += Random.Range(-_currentSpread, _currentSpread);
+                ammoFinalPoint.y += Random.Range(-_currentSpread, _currentSpread);
+                ammoFinalPoint.z += Random.Range(-_currentSpread, _currentSpread);
+                // draw ray
+                Debug.DrawRay(ray.origin, ray.direction * _weaponData.MaxDistance);
+                // prepare ammo
+                Vector3 ammoDirection = (ray.origin + ammoFinalPoint - _ammoSpawnPoint.position).normalized;
+                Quaternion ammoRotation = Quaternion.LookRotation(ammoDirection);
+                Rigidbody ammoInstance = Instantiate(_ammoRigidbody, _ammoSpawnPoint.position, ammoRotation);
+                ammoInstance.AddForce(ammoDirection * _weaponData.AmmoSpeed, ForceMode.Impulse);
+            }
             _audioSource.PlayOneShot(_weaponData.FireSound);
-        }
-
-        private void UpdateAmmoText()
-        {
-            _ammoText.text = _magAmmo + "/" + _totalAmmo;
         }
     }
 }

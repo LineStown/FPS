@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "GIS",
     "maps": [
         {
@@ -99,6 +100,24 @@
                     "name": "BuyAmmo",
                     "type": "Button",
                     "id": "54f745ce-7e64-4996-83bd-8f4bb7f6d241",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PickupWeapon",
+                    "type": "Button",
+                    "id": "95805409-16b2-4377-89bc-e4ff26979eef",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "DropWeapon",
+                    "type": "Button",
+                    "id": "c3b3d972-e7cb-46c7-b997-048b2c4c1b0c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -268,6 +287,28 @@
                     "processors": "",
                     "groups": ";PC",
                     "action": "BuyAmmo",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5ff193cc-effd-460a-a2eb-2562921faf94",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";PC",
+                    "action": "PickupWeapon",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "861832fc-1cbe-4bc9-8e6f-d2e40eac0f84",
+                    "path": "<Keyboard>/g",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";PC",
+                    "action": "DropWeapon",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

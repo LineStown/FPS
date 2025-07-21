@@ -1,19 +1,22 @@
-﻿using System;
+﻿using Assets.SCSIA.Scripts.Enums;
+using System;
 using UnityEngine;
 
-namespace Assets.SCSIA.Scripts.Weapon
+namespace Assets.SCSIA.Scripts.Level
 {
     [Serializable]
-    public class WeaponAmmoConfig
+    public class WeaponSpawnPosition
     {
         //############################################################################################
         // FIELDS
         //############################################################################################
-        [SerializeField] private float _speed;
+        [SerializeField] private Transform _position;
+        [SerializeField] private WeaponId _weaponId;
 
         //############################################################################################
-        // PREPERTIES
+        // PROPERTIES
         //############################################################################################
-        public float Speed => _speed;
+        public Transform Position => _position;
+        public WeaponId WeaponId => _weaponId;
     }
 }

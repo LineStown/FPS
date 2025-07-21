@@ -10,28 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f97a563593d181741b07fd313675b0cd, type: 3}
-  m_Name: M4
+  m_Name: M249
   m_EditorClassIdentifier: 
-  _id: 0
+  _id: 1
   _slot: 0
-  _fireRate: 600
+  _fireRate: 800
   _maxDistance: 300
-  _deltaSpread: 2
-  _maxSpread: 10
-  _magCapacity: 30
-  _totalCapacity: 120
-  _reloadTime: 2
+  _deltaSpread: 3
+  _maxSpread: 20
+  _magCapacity: 100
+  _totalCapacity: 500
+  _reloadTime: 5
   _ammoSpeed: 20
-  _fireModeConfig:
-  - _fireMode: 2
-    _burstShotsCount: 30
-    _cartridgeShotsCount: 1
-  - _fireMode: 0
-    _burstShotsCount: 3
-    _cartridgeShotsCount: 1
-  - _fireMode: 1
-    _burstShotsCount: 1
-    _cartridgeShotsCount: 1
+  _fireModeConfig: []
   _fireSound: {fileID: 8300000, guid: a414b4da0d4458442b6039ce81241e99, type: 3}
   _emptySound: {fileID: 8300000, guid: bbba48204f599cf42861ed97d0de197a, type: 3}
   _reloadSound: {fileID: 8300000, guid: f4a563547c933d7499244ba89f3423ea, type: 3}

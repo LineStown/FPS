@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ccac96d1f77be34f9257b8442d32823, type: 3}
+  m_Name: Enemy
+  m_EditorClassIdentifier: 
+  _lookHeight: 1.75
+  _lookMinPitch: -70
+  _lookMaxPitch: 70
+  _lookSensitivity: 0.08
+  _walkSpeed: 10
+  _sprintSpeed: 15
+  _accelerateMultiplier: 10
+  _airMultiplier: 0.2
+  _jumpPower: 7

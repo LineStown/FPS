@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using Assets.SCSIA.Scripts.Enums;
+﻿using Assets.SCSIA.Scripts.Enums;
 using Assets.SCSIA.Scripts.Weapon;
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace Assets.SCSIA.Scripts.Data
+namespace Assets.SCSIA.Scripts.DataModel
 {
     [CreateAssetMenu(fileName = "WeaponData", menuName = "Scriptable Objects/WeaponDataModel")]
     public class WeaponDataModel : ScriptableObject
@@ -14,7 +14,6 @@ namespace Assets.SCSIA.Scripts.Data
         [Header("Weapon")]
         [SerializeField] private WeaponId _id;
         [SerializeField] private WeaponSlot _slot;
-        [SerializeField] private WeaponController _controller;
 
         [Header("Weapon Parameters")]
         [SerializeField] private float _fireRate;
@@ -24,12 +23,10 @@ namespace Assets.SCSIA.Scripts.Data
         [SerializeField] private int _magCapacity;
         [SerializeField] private int _totalCapacity;
         [SerializeField] private float _reloadTime;
+        [SerializeField] private float _ammoSpeed;
 
         [Header("Weapon Fire Mode Config")]
         [SerializeField] private List<WeaponFireModeConfig> _fireModeConfig;
-
-        [Header("Weapon Ammo Config")]
-        [SerializeField] private WeaponAmmoConfig _ammoConfig;
 
         [Header("Audio")]
         [SerializeField] private AudioClip _fireSound;
@@ -43,7 +40,6 @@ namespace Assets.SCSIA.Scripts.Data
         // Weapon
         public WeaponId Id => _id;
         public WeaponSlot Slot => _slot;
-        public WeaponController Controller => _controller;
 
         // Weapon Fire Mode Config
         public float FireRate => _fireRate;
@@ -53,11 +49,9 @@ namespace Assets.SCSIA.Scripts.Data
         public int MagCapacity => _magCapacity;
         public int TotalCapacity => _totalCapacity;
         public float ReloadTime => _reloadTime;
+        public float AmmoSpeed => _ammoSpeed;
 
         public IReadOnlyList<WeaponFireModeConfig> FireModeConfig => _fireModeConfig;
-
-        // Weapon Ammo Config
-        public WeaponAmmoConfig AmmoConfig => _ammoConfig;
 
         // Audio
         public AudioClip FireSound => _fireSound;

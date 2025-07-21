@@ -9,10 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d9d501c7052c58848a21acee7ba885d6, type: 3}
+  m_Script: {fileID: 11500000, guid: 7b7ce3a29d718f44cad01d8e53553c63, type: 3}
   m_Name: DeDust3
   m_EditorClassIdentifier: 
-  _ammoRigidbody: {fileID: 3092678716497233472, guid: 09d460f9f5596f94f98215e03189c25c, type: 3}
-  _availableSlots: 0000000001000000
-  _avalaibleWeapons:
-  - {fileID: 11400000, guid: 031dd2a07d5505f439c7da126498f57f, type: 2}
+  _weaponControllers:
+  - {fileID: 4884689045285846942, guid: fa392956c15a6f446b67fabebf19b961, type: 3}

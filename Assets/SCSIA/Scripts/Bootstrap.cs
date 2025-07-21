@@ -1,20 +1,22 @@
 ﻿using Assets.SCSIA.Scripts.Enums;
-using Assets.SCSIA.Scripts.Player;
-using Assets.SCSIA.Scripts.Weapons;
+using Assets.SCSIA.Scripts.Level;
+using Assets.SCSIA.Scripts.UnitControl;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.SCSIA.Scripts
 {
     public class Bootstrap : MonoBehaviour
     {
-        [SerializeField] PlayerController _playerController;
-        [SerializeField] WeaponSelector _weaponSelector;
+        [SerializeField] private LevelController _levelController;
+        [SerializeField] private PlayerControl _playerControl;
+        [SerializeField] private List<Transform> _spawnPositions;
 
         private void Awake()
         {
-            _playerController.Initialize();
-            _weaponSelector.Initialize();
-            _weaponSelector.SpawnWeapon(WeaponId.M4);
+            _levelController.Init();
+            _levelController.SpawnWeaponOnPosision();
+            _playerControl.Init();
         }
     }
 }

@@ -1,24 +1,25 @@
 ﻿using Assets.SCSIA.Scripts.Enums;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Assets.SCSIA.Scripts.Weapon
+namespace Assets.SCSIA.Scripts.DataModel
 {
-    [Serializable]
-    public class WeaponFireModeConfig
+    public class WeaponSpawnModel : ScriptableObject
     {
         //############################################################################################
         // FIELDS
         //############################################################################################
-        [SerializeField] private WeaponFireMode _fireMode;
-        [SerializeField] private int _burstShotsCount;
-        [SerializeField] private int _cartridgeShotsCount;
+        [SerializeField] private Transform _position;
+        [SerializeField] private WeaponId _weaponId;
 
         //############################################################################################
-        // PREPERTIES
+        // PROPERTIES
         //############################################################################################
-        public WeaponFireMode FireMode => _fireMode;
-        public int BurstShotsCount => _burstShotsCount;
-        public int CartridgeShotsCount => _cartridgeShotsCount;
+        public Transform Position => _position;
+        public WeaponId WeaponId => _weaponId;
     }
 }
