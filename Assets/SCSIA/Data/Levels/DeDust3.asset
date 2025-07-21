@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponControllers:
   - {fileID: 4884689045285846942, guid: fa392956c15a6f446b67fabebf19b961, type: 3}
+  - {fileID: 7737205674881476375, guid: da74111895676264a8736f6333734037, type: 3}

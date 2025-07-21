@@ -370,6 +370,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _levelControllerData: {fileID: 11400000, guid: 9a92fcf3b29d62644a1c2f47670063a4, type: 2}
+  _weaponSpawnPositions:
+  - _position: {fileID: 1917259672}
+    _weaponId: 0
+  - _position: {fileID: 1526453443}
+    _weaponId: 1
+  - _position: {fileID: 700213681}
+    _weaponId: 0
+  - _position: {fileID: 16615439}
+    _weaponId: 1
 --- !u!1 &63789371
 GameObject:
   m_ObjectHideFlags: 0

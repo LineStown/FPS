@@ -20,10 +20,13 @@ MonoBehaviour:
   _maxSpread: 20
   _magCapacity: 100
   _totalCapacity: 500
-  _reloadTime: 5
+  _reloadTime: 5.5
   _ammoSpeed: 20
-  _fireModeConfig: []
+  _fireModeConfig:
+  - _fireMode: 2
+    _burstShotsCount: 100
+    _cartridgeShotsCount: 1
   _fireSound: {fileID: 8300000, guid: a414b4da0d4458442b6039ce81241e99, type: 3}
   _emptySound: {fileID: 8300000, guid: bbba48204f599cf42861ed97d0de197a, type: 3}
-  _reloadSound: {fileID: 8300000, guid: f4a563547c933d7499244ba89f3423ea, type: 3}
+  _reloadSound: {fileID: 8300000, guid: aebf9787e65181a4c8f056b4b9cef388, type: 3}
   _switchFireModeSound: {fileID: 8300000, guid: 24132f63a174db54faaa47a54d43e5c2, type: 3}
