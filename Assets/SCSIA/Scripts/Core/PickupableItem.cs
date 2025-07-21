@@ -9,14 +9,14 @@ namespace Assets.SCSIA.Scripts.Core
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private float _dropForce;
 
-        public void PickupItem()
+        virtual public void PickupItem()
         {
             foreach(Collider collider in _itemColliders)
                 collider.enabled = false;
             _rigidbody.isKinematic = true;
         }
 
-        public void DropItem(Vector3 direction)
+        virtual public void DropItem(Vector3 direction)
         {
             foreach (Collider collider in _itemColliders)
                 collider.enabled = true;

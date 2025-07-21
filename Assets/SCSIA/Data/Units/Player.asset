@@ -15,8 +15,8 @@ MonoBehaviour:
   _lookHeight: 1.75
   _lookMinPitch: -70
   _lookMaxPitch: 70
-  _lookSensitivity: 0.08
-  _walkSpeed: 8
+  _lookSensitivity: 0.06
+  _walkSpeed: 7
   _sprintSpeed: 12
   _accelerateMultiplier: 5
   _airMultiplier: 0.2

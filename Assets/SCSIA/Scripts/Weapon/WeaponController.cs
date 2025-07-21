@@ -111,6 +111,13 @@ namespace Assets.SCSIA.Scripts.Weapon
             _totalAmmo = _weaponData.TotalCapacity;
         }
 
+        override public void DropItem(Vector3 direction)
+        {
+            _audioSource.Stop();
+            _reloading = false;
+            base.DropItem(direction);
+        }
+
         //############################################################################################
         // PRIVATE UNITY METHODS
         //############################################################################################
