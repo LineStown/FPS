@@ -116,7 +116,7 @@ namespace Assets.SCSIA.Scripts.Unit
                 targetDirection.y = 0f;
                 targetDirection = targetDirection.normalized;
                 float acceleration = (_grounded ? (_sprintEnabled ? _unitData.SprintSpeed : _unitData.WalkSpeed) : _unitData.WalkSpeed * _unitData.AirMultiplie) * _unitData.AccelerateMultiplier;
-                _rigidbody.AddForce(targetDirection * acceleration, ForceMode.Force);
+                _rigidbody.AddForce(targetDirection * acceleration, ForceMode.Acceleration);
             }
         }
 
@@ -132,7 +132,7 @@ namespace Assets.SCSIA.Scripts.Unit
             if (_rigidbody.linearVelocity.y < 0f)
             {
 
-                _rigidbody.AddForce(Vector3.up * Physics.gravity.y * 1.5f, ForceMode.Acceleration);
+                _rigidbody.AddForce(Vector3.up * Physics.gravity.y * _unitData.GravityMultiplier, ForceMode.Acceleration);
             }
         }
 
