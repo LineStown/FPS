@@ -19,6 +19,7 @@ namespace Assets.SCSIA.Scripts.DataModel
         [SerializeField] private float _sprintSpeed = 15f;
         [SerializeField] private float _accelerateMultiplier = 10f;
         [SerializeField] private float _airMultiplier = 0.2f;
+        [SerializeField] private float _gravityMultiplier = 1.5f;
         [SerializeField] private float _jumpPower = 7f;
 
         //############################################################################################
@@ -33,6 +34,7 @@ namespace Assets.SCSIA.Scripts.DataModel
         public float SprintSpeed => _sprintSpeed;
         public float AccelerateMultiplier => _accelerateMultiplier;
         public float AirMultiplie => _airMultiplier;
+        public float GravityMultiplier => _gravityMultiplier;
         public float JumpPower => _jumpPower;
     }
 }

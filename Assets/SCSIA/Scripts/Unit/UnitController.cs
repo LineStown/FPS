@@ -71,7 +71,7 @@ namespace Assets.SCSIA.Scripts.Unit
         //############################################################################################
         // PRIVATE UNITY METHODS
         //############################################################################################
-        private void FixedUpdate()
+        private void Update()
         {
             CheckUnitGround();
             MoveUnit();
@@ -102,6 +102,7 @@ namespace Assets.SCSIA.Scripts.Unit
 
         private void MoveUnit()
         {
+            
             if (_moveInput == Vector2.zero)
             {
                 // stop on ground
