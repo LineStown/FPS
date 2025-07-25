@@ -1,5 +1,4 @@
-﻿using Assets.SCSIA.Scripts.Enums;
-using Assets.SCSIA.Scripts.Level;
+﻿using Assets.SCSIA.Scripts.Level;
 using Assets.SCSIA.Scripts.UnitControl;
 using System.Collections.Generic;
 using UnityEngine;

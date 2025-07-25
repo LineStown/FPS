@@ -8,15 +8,16 @@ namespace Assets.SCSIA.Scripts.Unit
         //############################################################################################
         // FIELDS
         //############################################################################################
-        [Header("Character Data")]
+        [Header("Unit Data")]
         [SerializeField] private UnitDataModel _unitData;
-        [Header("Character Settings")]
+        [Header("Unit Settings")]
         [SerializeField] private Camera _lookCamera;
         [SerializeField] private Transform _lookSpot;
+        //[SerializeField] private Transform _
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private CapsuleCollider _capsuleCollider;
 
-        private Vector2 _lookDirection;
+        private Vector2 _lookInput;
         private Vector2 _moveInput;
         private bool _sprintEnabled;
         private bool _jumpEnabled;
@@ -29,7 +30,7 @@ namespace Assets.SCSIA.Scripts.Unit
         //############################################################################################
         public void Init()
         {
-            _lookDirection = Vector2.zero;
+            _lookInput = Vector2.zero;
             _moveInput = Vector2.zero;
             _sprintEnabled = false;
             _jumpEnabled = false;
@@ -37,20 +38,20 @@ namespace Assets.SCSIA.Scripts.Unit
             _grounded = false;
             _groundedRayDistance = _capsuleCollider.height * 0.5f + _capsuleCollider.height * 0.1f;
 
-            SetupLookSpot();
-            SetupLookCamera();
+            _lookSpot.position = new Vector3(0, -_capsuleCollider.height * 0.5f + _unitData.LookHeight, 0);
+            _lookSpot.rotation = Quaternion.identity;
+
+            _lookCamera.transform.SetParent(_lookSpot);
+            _lookCamera.transform.localPosition = Vector3.zero;
+            _lookCamera.transform.localRotation = Quaternion.identity;
         }
 
         public void OnLookInput(Vector2 lookInput)
         {
             lookInput *= _unitData.LookSensitivity;
-            // x
-            _lookDirection.x += lookInput.x;
-            _rigidbody.MoveRotation(Quaternion.Euler(0f, _lookDirection.x, 0f));
-            // y
-            _lookDirection.y -= lookInput.y;
-            _lookDirection.y = Mathf.Clamp(_lookDirection.y, _unitData.LookMinPitch, _unitData.LookMaxPitch);
-            _lookSpot.transform.localRotation = Quaternion.Euler(_lookDirection.y, 0f, 0f);
+            _lookInput.x += lookInput.x;
+            _lookInput.y -= lookInput.y;
+            _lookInput.y = Mathf.Clamp(_lookInput.y, _unitData.LookMinPitch, _unitData.LookMaxPitch);
         }
 
         public void OnMoveInput(Vector2 moveInput)
@@ -71,36 +72,28 @@ namespace Assets.SCSIA.Scripts.Unit
         //############################################################################################
         // PRIVATE UNITY METHODS
         //############################################################################################
-        private void Update()
+        private void FixedUpdate()
         {
-            CheckUnitGround();
-            MoveUnit();
+            CheckGround();
+            MoveAndRotateUnit();
             JumpUnit();
             ClampUnitVelocity();
+        }
+
+        private void LateUpdate()
+        {
+            UpdateLookSpot();
         }
 
         //############################################################################################
         // PRIVATE METHODS
         //############################################################################################
-        private void SetupLookSpot()
-        {
-            _lookSpot.localPosition = new Vector3(0, -_capsuleCollider.height * 0.5f + _unitData.LookHeight, 0);
-            _lookSpot.localRotation = Quaternion.identity;
-        }
-
-        private void SetupLookCamera()
-        {
-            _lookCamera.transform.SetParent(_lookSpot);
-            _lookCamera.transform.localPosition = Vector3.zero;
-            _lookCamera.transform.localRotation = Quaternion.identity;
-        }
-
-        private void CheckUnitGround()
+        private void CheckGround()
         {
             _grounded = Physics.Raycast(transform.position, Vector3.down, _groundedRayDistance);
         }
 
-        private void MoveUnit()
+        private void MoveAndRotateUnit()
         {
             
             if (_moveInput == Vector2.zero)
@@ -118,6 +111,8 @@ namespace Assets.SCSIA.Scripts.Unit
                 float acceleration = (_grounded ? (_sprintEnabled ? _unitData.SprintSpeed : _unitData.WalkSpeed) : _unitData.WalkSpeed * _unitData.AirMultiplie) * _unitData.AccelerateMultiplier;
                 _rigidbody.AddForce(targetDirection * acceleration, ForceMode.Acceleration);
             }
+            // rotate
+            _rigidbody.MoveRotation(Quaternion.Euler(0f, _lookInput.x, 0f));
         }
 
         private void JumpUnit()
@@ -128,23 +123,23 @@ namespace Assets.SCSIA.Scripts.Unit
                 _jumpWithSprint = _sprintEnabled;
             }
             _jumpEnabled = false;
-
-            if (_rigidbody.linearVelocity.y < 0f)
-            {
-
-                _rigidbody.AddForce(Vector3.up * Physics.gravity.y * _unitData.GravityMultiplier, ForceMode.Acceleration);
-            }
         }
 
         private void ClampUnitVelocity()
         {
-            float speedLimit = _grounded ? (_sprintEnabled ? _unitData.SprintSpeed : _unitData.WalkSpeed) : (_jumpWithSprint ? _unitData.SprintSpeed : _unitData.WalkSpeed);
+            float maxSpeed = _grounded ? (_sprintEnabled ? _unitData.SprintSpeed : _unitData.WalkSpeed) : (_jumpWithSprint ? _unitData.SprintSpeed : _unitData.WalkSpeed);
             Vector3 currentSpeed = new Vector3(_rigidbody.linearVelocity.x, 0f, _rigidbody.linearVelocity.z);
-            if (currentSpeed.magnitude > speedLimit)
+            if (currentSpeed.magnitude > maxSpeed)
             {
-                currentSpeed = currentSpeed.normalized * speedLimit;
+                currentSpeed = currentSpeed.normalized * maxSpeed;
                 _rigidbody.linearVelocity = new Vector3(currentSpeed.x, _rigidbody.linearVelocity.y, currentSpeed.z);
             }
+        }
+
+        private void UpdateLookSpot()
+        {
+            _lookSpot.position = new Vector3(_rigidbody.transform.position.x, _rigidbody.transform.position.y + -_capsuleCollider.height * 0.5f + _unitData.LookHeight, _rigidbody.transform.position.z);
+            _lookSpot.rotation = Quaternion.Euler(_lookInput.y, _lookInput.x, 0f);
         }
     }
 }

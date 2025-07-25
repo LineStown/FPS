@@ -16,8 +16,8 @@ MonoBehaviour:
   _slot: 0
   _fireRate: 700
   _maxDistance: 300
-  _deltaSpread: 2
-  _maxSpread: 10
+  _deltaSpread: 0.5
+  _maxSpread: 5
   _magCapacity: 30
   _totalCapacity: 120
   _reloadTime: 2
