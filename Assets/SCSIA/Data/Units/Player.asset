@@ -18,7 +18,7 @@ MonoBehaviour:
   _lookSensitivity: 0.05
   _walkSpeed: 6
   _sprintSpeed: 9
-  _accelerateMultiplier: 10
+  _moveMultiplier: 10
+  _jumpPower: 7
   _airMultiplier: 0.2
   _gravityMultiplier: 1
-  _jumpPower: 7

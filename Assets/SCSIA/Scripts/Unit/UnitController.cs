@@ -1,4 +1,5 @@
 ﻿using Assets.SCSIA.Scripts.DataModel;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 namespace Assets.SCSIA.Scripts.Unit
@@ -13,9 +14,9 @@ namespace Assets.SCSIA.Scripts.Unit
         [Header("Unit Settings")]
         [SerializeField] private Camera _lookCamera;
         [SerializeField] private Transform _lookSpot;
-        //[SerializeField] private Transform _
         [SerializeField] private Rigidbody _rigidbody;
         [SerializeField] private CapsuleCollider _capsuleCollider;
+        [SerializeField] private LayerMask _groundLayer;
 
         private Vector2 _lookInput;
         private Vector2 _moveInput;
@@ -90,12 +91,11 @@ namespace Assets.SCSIA.Scripts.Unit
         //############################################################################################
         private void CheckGround()
         {
-            _grounded = Physics.Raycast(transform.position, Vector3.down, _groundedRayDistance);
+            _grounded = Physics.Raycast(_rigidbody.transform.position, Vector3.down, _groundedRayDistance, _groundLayer);
         }
 
         private void MoveAndRotateUnit()
         {
-            
             if (_moveInput == Vector2.zero)
             {
                 // stop on ground
@@ -108,7 +108,7 @@ namespace Assets.SCSIA.Scripts.Unit
                 Vector3 targetDirection = (_lookSpot.transform.forward * _moveInput.y + _lookSpot.transform.right * _moveInput.x);
                 targetDirection.y = 0f;
                 targetDirection = targetDirection.normalized;
-                float acceleration = (_grounded ? (_sprintEnabled ? _unitData.SprintSpeed : _unitData.WalkSpeed) : _unitData.WalkSpeed * _unitData.AirMultiplie) * _unitData.AccelerateMultiplier;
+                float acceleration = (_grounded ? (_sprintEnabled ? _unitData.SprintSpeed : _unitData.WalkSpeed) : _unitData.WalkSpeed * _unitData.AirMultiplie) * _unitData.MoveMultiplier;
                 _rigidbody.AddForce(targetDirection * acceleration, ForceMode.Acceleration);
             }
             // rotate

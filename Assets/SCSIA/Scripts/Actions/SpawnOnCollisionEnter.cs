@@ -18,7 +18,7 @@ namespace Assets.SCSIA.Scripts.Actions
             ContactPoint contactPoint = collision.contacts[0];
             Vector3 decalPosition = contactPoint.point;
             Quaternion rotation = Quaternion.LookRotation(_invertNormal ? -contactPoint.normal : contactPoint.normal);
-            Instantiate(_gameObject, decalPosition, rotation);
+            Instantiate(_gameObject, decalPosition, rotation, collision.transform);
         }
     }
 }
